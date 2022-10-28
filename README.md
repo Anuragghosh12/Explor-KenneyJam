@@ -11,4 +11,4 @@ JUAC Gacha Game
 1. `git clone https://github.com/Anuragghosh12/Gacha1.git`.
 2. Double Click "Gacha1.uproject".
 3. Check if you can see black level with grid.
-![alt text](https://github.com/Anuragghosh12/Gatcha1/sample.png "Logo Title Text 1")
+![alt text](https://github.com/Anuragghosh12/Gacha1/blob/main/sample.png "Logo Title Text 1")
