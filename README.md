@@ -5,6 +5,7 @@ JUAC Gacha Game
 
 1. Git.
 2. Unreal Engine installed from Epic Games Store or compiled from source.
+3. PaperZD
 
 ## Steps to get the project running locally
 
