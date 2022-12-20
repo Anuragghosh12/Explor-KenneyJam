@@ -8,7 +8,7 @@ public class Gacha1 : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 	
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore" });
+		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore" , "Paper2D" ,"PaperZD"});
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
 

@@ -7,7 +7,11 @@
 		{
 			"Name": "Gacha1",
 			"Type": "Runtime",
-			"LoadingPhase": "Default"
+			"LoadingPhase": "Default",
+			"AdditionalDependencies": [
+				"Engine",
+				"PaperZD"
+			]
 		}
 	],
 	"Plugins": [
