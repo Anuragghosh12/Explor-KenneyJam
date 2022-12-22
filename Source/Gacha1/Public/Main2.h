@@ -3,17 +3,17 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "PaperZDCharacter.h"
-#include "PaperZD/Public/AnimSequences/PaperZDAnimSequence_Flipbook.h"
+#include "PaperCharacter.h"
+//#include "PaperZD/Public/AnimSequences/PaperZDAnimSequence_Flipbook.h"
 #include "PaperFlipbookComponent.h"
 #include "Main2.generated.h"
 
 /**
- * 
+ *
  */
 
-UENUM(BlueprintType, Category="Animation")
-enum class EAnimationDirection:uint8
+UENUM(BlueprintType, Category = "Animation")
+enum class EAnimationDirection :uint8
 {
 	Up,
 	Down,
@@ -22,55 +22,97 @@ enum class EAnimationDirection:uint8
 	UpperLeft,
 	UpperRight,
 	DownLeft,
-	DownRight
+	DownRight,
+	Jump,
+	Fall
 
 };
 
-USTRUCT(BlueprintType, Category="Animation")
+USTRUCT(BlueprintType, Category = "Animation")
 struct FAnimationFlipbooks
 {
 	GENERATED_BODY()
 
+		UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		UPaperFlipbook* IdleUp {
+		nullptr
+	};
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		UPaperFlipbook* IdleUp {nullptr};
+		UPaperFlipbook* IdleDown {
+		nullptr
+	};
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		UPaperFlipbook* IdleDown {nullptr};
+		UPaperFlipbook* IdleLeft {
+		nullptr
+	};
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		UPaperFlipbook* IdleLeft {nullptr};
+		UPaperFlipbook* IdleRight {
+		nullptr
+	};
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		UPaperFlipbook* IdleRight {nullptr};
+		UPaperFlipbook* IdleUpperLeft {
+		nullptr
+	};
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		UPaperFlipbook* IdleUpperLeft {nullptr};
+		UPaperFlipbook* IdleUpperRight {
+		nullptr
+	};
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		UPaperFlipbook* IdleUpperRight {nullptr};
+		UPaperFlipbook* IdleDownLeft {
+		nullptr
+	};
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		UPaperFlipbook* IdleDownLeft {nullptr};
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		UPaperFlipbook* IdleDownRight {nullptr};
+		UPaperFlipbook* IdleDownRight {
+		nullptr
+	};
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		UPaperFlipbook* WalkUp {nullptr};
+		UPaperFlipbook* WalkUp {
+		nullptr
+	};
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		UPaperFlipbook* WalkDown {nullptr};
+		UPaperFlipbook* WalkDown {
+		nullptr
+	};
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		UPaperFlipbook* WalkLeft {nullptr};
+		UPaperFlipbook* WalkLeft {
+		nullptr
+	};
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		UPaperFlipbook* WalkRight {nullptr};
+		UPaperFlipbook* WalkRight {
+		nullptr
+	};
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		UPaperFlipbook* WalkUpperLeft {nullptr};
+		UPaperFlipbook* WalkUpperLeft {
+		nullptr
+	};
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		UPaperFlipbook* WalkUpperRight {nullptr};
+		UPaperFlipbook* WalkUpperRight {
+		nullptr
+	};
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		UPaperFlipbook* WalkDownLeft {nullptr};
+		UPaperFlipbook* WalkDownLeft {
+		nullptr
+	};
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		UPaperFlipbook* WalkDownRight {nullptr};
+		UPaperFlipbook* WalkDownRight {
+		nullptr
+	};
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		UPaperFlipbook* Jump {
+		nullptr
+	};
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		UPaperFlipbook* Fall {
+		nullptr
+	};
 };
 
 /*
- *A Paper Character using the 2d animation sprites 
+ *A Paper Character using the 2d animation sprites
  */
 UCLASS()
-class GACHA1_API AMain2 : public APaperZDCharacter
+class GACHA1_API AMain2 : public APaperCharacter
 {
 	GENERATED_BODY()
 
@@ -98,17 +140,17 @@ private:
 	bool CanMove;
 
 protected:
-	 
+
 	virtual void BeginPlay() override;
 	virtual void AddMovementInput(FVector WorldDirection, float ScaleValue, bool bForce) override;
 
 	void MoveRight(float Value);
+	void MoveForward(float Value);
 
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components")
-	class USpringArmComponent* SpringArmComponent;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
-	class UCameraComponent* CameraComponent;
+		class USpringArmComponent* SpringArmComponent;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+		class UCameraComponent* CameraComponent;
 
 	UFUNCTION(BlueprintCallable, Category = "AnimationCharacter|Animation")
 		void Animate(float DeltaTime, FVector OldLocation, FVector const OldVelocity);
@@ -118,10 +160,12 @@ protected:
 
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AnimationCharacter|Config")
-		EAnimationDirection CurrentAnimationDirection{EAnimationDirection::Down};
+		EAnimationDirection CurrentAnimationDirection {
+		EAnimationDirection::Down
+	};
 
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AnimationCharacter|Config")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AnimationCharacter|Config")
 		FAnimationFlipbooks Flipbooks;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AnimationCharacter|Config")
