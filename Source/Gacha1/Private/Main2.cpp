@@ -202,61 +202,68 @@ void AMain2::SetCurrentAnimationDirection(FVector const& Velocity)
 	const float y = Velocity.GetSafeNormal().Y;
 	const float z = Velocity.GetSafeNormal().Z;
 
-	bIsMoving = x != 0.0f || y != 0.0f;
+	bIsMoving = x != 0.0f || y != 0.0f ;
 	
 	
 	if (bIsMoving)
 	{
-		if (z >= 0.0f)
+		if (z == 0.0f)
 		{
 			if (y > 0.0f && x == 0.0f)
 			{
 				CurrentAnimationDirection = EAnimationDirection::Down;
 			}
-			/**else if (y > 0.5f && x > 0.5f)
+			else if (y > 0.0f && x > 0.0f)
 			{
 				CurrentAnimationDirection = EAnimationDirection::DownRight;
 			}
-			else if (y > 0.5f && x < -0.5f)
+			else if (y > 0.0f && x < -0.0f)
 			{
 				CurrentAnimationDirection = EAnimationDirection::DownLeft;
-			}*/
+			}
 			else if (y < 0.0f && x == 0.0f)
 			{
 				CurrentAnimationDirection = EAnimationDirection::Up;
 			}
-			/*
-			else if (y < -0.5f && x> 0.5f)
+			
+			else if (y < -0.0f && x> 0.0f)
 			{
 				CurrentAnimationDirection = EAnimationDirection::UpperRight;
 			}
-			else if (y < -0.5f && x - 0.5f)
+			else if (y < -0.0f && x - 0.0f)
 			{
 				CurrentAnimationDirection = EAnimationDirection::UpperLeft;
-			}*/
+			}
 			else if (y == 0.0f && x > 0.0f)
 			{
 				CurrentAnimationDirection = EAnimationDirection::Right;
 			}
-			/*else if (z > 0.0f)
+			else if (z > 0.0f)
 			{
 				CurrentAnimationDirection = EAnimationDirection::Jump;
 			}
 			else if (z < 0.0f)
 			{
 				CurrentAnimationDirection = EAnimationDirection::Fall;
-			}*/
+			}
 			else if (y == 0.0f && x < 0.0f)
 			{
 				CurrentAnimationDirection = EAnimationDirection::Left;
 			}
 
 		}
+		else if(z>0.0f)
+		{
+			CurrentAnimationDirection = EAnimationDirection::Jump;
+		}
 		else
 		{
-			CurrentAnimationDirection = EAnimationDirection::Fall;
+			
+				CurrentAnimationDirection = EAnimationDirection::Fall;
+			
 		}
 	}
+	
 	else
 	{
 		if (z > 0.0f)
