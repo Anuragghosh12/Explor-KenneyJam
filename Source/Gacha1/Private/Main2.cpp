@@ -35,13 +35,13 @@ AMain2::AMain2()
 	GetCharacterMovement()->AirControl = 0.8f; //how much the character can move while mid air after a jump or fall
 	GetCharacterMovement()->JumpZVelocity = 1000.0f;//initial jump velocity;
 	GetCharacterMovement()->GroundFriction = 3.0f;//self explanatory
-	GetCharacterMovement()->MaxWalkSpeed = 600.0f;//self explanatory
+	GetCharacterMovement()->MaxWalkSpeed = 500.0f;//self explanatory
 	GetCharacterMovement()->MaxFlySpeed = 600.0f;// idk what this means
 
 	TempPos = GetActorLocation();//gets the actor location and assigns it to variable
 	zPosition = TempPos.Z + 300.0f;//assigns the z-axis value of current position vector
 
-	JumpHeight = 600.f;
+	JumpHeight = 500.f;
 
 	OnCharacterMovementUpdated.AddDynamic(this, &AMain2::Animate);
 
@@ -80,7 +80,7 @@ void AMain2::Landed(const FHitResult& Hit)
 
 void AMain2::DoubleJump()
 {
-	if (DoubleJumpCounter <= 2 )
+	if (DoubleJumpCounter < 2 )
 	{
 		ACharacter::LaunchCharacter(FVector(0, 0, JumpHeight), false, true); //#1 asks for the launch parameters, #2 checks for x,y launch #3 checks for z launch
 		DoubleJumpCounter++;
