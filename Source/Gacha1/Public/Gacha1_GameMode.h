@@ -14,9 +14,11 @@ class GACHA1_API AGacha1_GameMode : public AGameMode
 {
 	GENERATED_BODY()
 public:
+
 	void RestartGameplay(bool Won);
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-		int TimerCount = 300;
+		int TimerCount = 10;
+
 	void BeginPlay() override;
 
 private:
