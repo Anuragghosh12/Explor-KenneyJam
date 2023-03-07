@@ -171,7 +171,10 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AnimationCharacter|Config")
 		uint8 bIsMoving : 1;
 
-
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+		float Health = 100.0f;
+public:
+	void DealDamage(float DamageAmount);
 
 };
 

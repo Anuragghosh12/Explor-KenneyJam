@@ -52,6 +52,7 @@ void AMain2::BeginPlay()
 {
 	Super::BeginPlay();
 	CanMove = true;
+	
 }
 
 void AMain2::Tick(float DeltaTime)
@@ -282,4 +283,16 @@ void AMain2::SetCurrentAnimationDirection(FVector const& Velocity)
 	}
 
 }
+
+void AMain2::DealDamage(float DamageAmount)
+{
+	Health -= DamageAmount;
+	if(Health<=0.0f)
+	{
+		//restart
+
+		Destroy();
+	}
+}
+
 
