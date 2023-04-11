@@ -8,6 +8,7 @@
 #include "GameFramework/PawnMovementComponent.h"
 #include "PaperZD/Public/AnimSequences/PaperZDAnimSequence_Flipbook.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Components/InputComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "PaperFlipbookComponent.h"
 AMain2::AMain2()
@@ -54,6 +55,7 @@ void AMain2::BeginPlay()
 	CanMove = true;
 	
 }
+
 
 void AMain2::Tick(float DeltaTime)
 {

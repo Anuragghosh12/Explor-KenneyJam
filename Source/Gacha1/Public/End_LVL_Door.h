@@ -25,10 +25,16 @@ public:
 
 	UPROPERTY(EditAnywhere)
 		class UStaticMeshComponent* DoorMesh;
-
+	UPROPERTY(EditAnywhere, Category = "Effects")
+		UParticleSystem* ExplosionEffect;
 	UPROPERTY(EditAnywhere)
 		class UBoxComponent* CollisionComponent;
-
+	UPROPERTY(EditAnywhere,BlueprintReadOnly, Category="Death Screen")
+		float Delay;
+	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category="Death Screen")
+		float DeathCooldownTime = 3.0f;
+	bool bIsDeathOnCooldown = false;
+	float DeathCooldownTimeLeft;
 	UFUNCTION()
 		void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor,
 			UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& Hit);

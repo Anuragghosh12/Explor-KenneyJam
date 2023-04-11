@@ -5,8 +5,10 @@
 
 #include "Components/StaticMeshComponent.h"
 #include "Components/BoxComponent.h"
+
 #include "Main2.h"
 #include "Gacha1_GameMode.h"
+#include "Components/CapsuleComponent.h"
 #include "Kismet/GameplayStatics.h"
 
 // Sets default values
@@ -19,6 +21,8 @@ AEnd_LVL_Door::AEnd_LVL_Door()
 	RootComponent = DoorMesh;
 	CollisionComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("Collision Component"));
 	CollisionComponent->SetupAttachment(DoorMesh);
+	DeathCooldownTime = 3.0f;
+	bIsDeathOnCooldown = false;
 }
 
 // Called when the game starts or when spawned
@@ -34,7 +38,23 @@ void AEnd_LVL_Door::BeginPlay()
 void AEnd_LVL_Door::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	if (bIsDeathOnCooldown)
+	{
+		DeathCooldownTimeLeft -= DeltaTime;
 
+		if (DeathCooldownTimeLeft <= 0.0f)
+		{
+
+			AGacha1_GameMode* MyGameMode =
+				Cast<AGacha1_GameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+			bIsDeathOnCooldown = false;
+			if(MyGameMode)
+			{
+				MyGameMode->OnDeathScreenDelayExpire();
+			}
+
+		}
+	}
 }
 
 void AEnd_LVL_Door::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
@@ -47,9 +67,23 @@ void AEnd_LVL_Door::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPri
 
 		AGacha1_GameMode* MyGameMode =
 			Cast<AGacha1_GameMode>(UGameplayStatics::GetGameMode(GetWorld()));
-		if(MyGameMode)
+		if(MyGameMode
+			&& !bIsDeathOnCooldown)
 		{
-			MyGameMode->RestartGameplay(true);
+			
+			UPaperFlipbookComponent* CharacterFlipbook = Cast<UPaperFlipbookComponent>(Char->GetComponentByClass(UPaperFlipbookComponent::StaticClass()));
+			if (CharacterFlipbook)
+			{
+				CharacterFlipbook->SetVisibility(false);
+				if (ExplosionEffect)
+				{
+					UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ExplosionEffect, GetActorLocation());
+				}
+			}
+			MyGameMode->ShowDeathScreen();
+			bIsDeathOnCooldown = true;
+			DeathCooldownTimeLeft = DeathCooldownTime;
+			
 		} 
 
 	}

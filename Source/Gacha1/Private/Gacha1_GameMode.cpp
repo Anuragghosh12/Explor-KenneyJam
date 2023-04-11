@@ -5,42 +5,44 @@
 #include "Blueprint/UserWidget.h"
 #include "Engine/World.h"
 #include "TimerManager.h"
+#include "UObject/ConstructorHelpers.h"
 #include "Kismet/GameplayStatics.h"
 
 
+
+AGacha1_GameMode::AGacha1_GameMode()
+{
+	
+	static ConstructorHelpers::FClassFinder<UUserWidget> DeathScreenWidgetClassFinder(TEXT("/Game/UI/DeathScreenWidget"));
+	if (DeathScreenWidgetClassFinder.Succeeded())
+	{
+		DeathScreenWidgetClass = DeathScreenWidgetClassFinder.Class;
+	}
+}
 void AGacha1_GameMode::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if(DeathScreenWidgetClass!=nullptr)
-	{
-		DeathScreenWidget = CreateWidget<UUserWidget>(GetWorld(), DeathScreenWidgetClass);
-		if (DeathScreenWidget!=nullptr)
-		{
-			DeathScreenWidget->AddToViewport();
-			DeathScreenWidget->SetVisibility(ESlateVisibility::Hidden);
-		}
-	}
-	GetWorldTimerManager().SetTimer(CountDownTimerHandle, this,
-		&AGacha1_GameMode::CountdownTimer, 1.0f, true, 1.0f);
+	HideDeathScreen();
 }
 
 void AGacha1_GameMode::ShowDeathScreen()
 {
-	if(DeathScreenWidget!=nullptr)
+	DeathScreenWidget = CreateWidget<UUserWidget>(GetWorld(), DeathScreenWidgetClass);
+
+	// Add the widget to the viewport
+	if (DeathScreenWidget)
 	{
-		
-			DeathScreenWidget->SetVisibility(ESlateVisibility::Visible);
-			GetWorld()->GetTimerManager().SetTimer(DeathScreenDelayHandle, this, &AGacha1_GameMode::OnDeathScreenDelayExpire, 3.0f);
-		
+		DeathScreenWidget->AddToViewport();
 	}
 }
 
 void AGacha1_GameMode::HideDeathScreen()
 {
-	if(DeathScreenWidget!=nullptr)
+	if (DeathScreenWidget)
 	{
-		DeathScreenWidget->SetVisibility(ESlateVisibility::Hidden);
+		DeathScreenWidget->RemoveFromParent();
+		DeathScreenWidget = nullptr;
 	}
 }
 
@@ -50,22 +52,18 @@ void AGacha1_GameMode::OnDeathScreenDelayExpire()
 	RestartGameplay(true);
 }
 
+
 void AGacha1_GameMode::RestartGameplay(bool Won)
 {
 	if (Won)
 	{
-		AGacha1_GameMode* ThisGameMode = Cast<AGacha1_GameMode>(GetWorld()->GetAuthGameMode());
-		if(ThisGameMode)
-		{
-			ThisGameMode->ShowDeathScreen();
-		}
-		
+		ShowDeathScreen();
+		GetWorldTimerManager().SetTimer(DeathScreenDelayHandle, this, &AGacha1_GameMode::OnDeathScreenDelayExpire, Delay, false);
 		ResetLevel();
 	}
 	else
 	{
-		FTimerHandle TimerHandle;
-		GetWorldTimerManager().SetTimer(TimerHandle, this, &AGacha1_GameMode::ResetLevel, 5.0f);
+		UGameplayStatics::OpenLevel(GetWorld(), FName(*GetWorld()->GetName()), false);
 	}
 }
 void AGacha1_GameMode::ResetLevel()
@@ -81,6 +79,6 @@ void AGacha1_GameMode::CountdownTimer()
 	if (TimerCount <= 0)
 	{
 		GetWorldTimerManager().ClearTimer(CountDownTimerHandle);
-		ResetLevel();
+		RestartGameplay(true);
 	}
 }
