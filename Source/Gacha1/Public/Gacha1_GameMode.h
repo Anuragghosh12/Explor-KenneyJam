@@ -16,27 +16,28 @@ class GACHA1_API AGacha1_GameMode : public AGameMode
 public:
 	AGacha1_GameMode();
 	void RestartGameplay(bool Won);
+	virtual void Tick(float DeltaTime) override;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-		int TimerCount = 10;
-
+		float TimerCount = 2.f;
 	void BeginPlay() override;
 	void ShowDeathScreen();
 	void HideDeathScreen();
-	
 	void OnDeathScreenDelayExpire();
-
+	UPROPERTY(EditAnywhere, Category = "Effects")
+		UParticleSystem* ExplosionEffect;
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "Death Screen")
 		TSubclassOf<UUserWidget> DeathScreenWidgetClass;
 	UPROPERTY()
 		UUserWidget* DeathScreenWidget;
 	UPROPERTY(EditAnywhere, Category = "Death Screen")
-		float Delay;
+		float Delay=3.f;
 	FTimerHandle DeathScreenDelayHandle;
 	void ResetLevel();
-	
+
+	float Timer, Del;
 	
 	FTimerHandle CountDownTimerHandle = FTimerHandle();
-
+	FTimerHandle DelayTimerHandle = FTimerHandle();
 	void CountdownTimer();
 };

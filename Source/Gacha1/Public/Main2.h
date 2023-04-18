@@ -23,8 +23,11 @@ enum class EAnimationDirection :uint8
 	UpperRight,
 	DownLeft,
 	DownRight,
-	Jump,
-	Fall
+	Jump_Right,
+	Jump_Left,
+	Fall_Right,
+	Fall_Left,
+	Last
 
 };
 
@@ -99,11 +102,19 @@ struct FAnimationFlipbooks
 		nullptr
 	};
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		UPaperFlipbook* Jump {
+		UPaperFlipbook* Jump_Right {
 		nullptr
 	};
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		UPaperFlipbook* Fall {
+		UPaperFlipbook* Jump_Left {
+		nullptr
+	};
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		UPaperFlipbook* Fall_Left {
+		nullptr
+	};
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		UPaperFlipbook* Fall_Right {
 		nullptr
 	};
 };
@@ -132,13 +143,12 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float JumpHeight;
-
+	EAnimationDirection Last;
 
 private:
 	float zPosition;
 	FVector TempPos = FVector();
 	bool CanMove;
-
 protected:
 
 	virtual void BeginPlay() override;
@@ -161,7 +171,6 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AnimationCharacter|Config")
 		EAnimationDirection CurrentAnimationDirection {
-		EAnimationDirection::Down
 	};
 
 

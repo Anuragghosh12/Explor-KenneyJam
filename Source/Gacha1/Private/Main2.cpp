@@ -9,6 +9,7 @@
 #include "PaperZD/Public/AnimSequences/PaperZDAnimSequence_Flipbook.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Components/InputComponent.h"
+
 #include "GameFramework/CharacterMovementComponent.h"
 #include "PaperFlipbookComponent.h"
 AMain2::AMain2()
@@ -28,8 +29,8 @@ AMain2::AMain2()
 
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	CameraComponent->SetupAttachment(SpringArmComponent);
-
-	GetCharacterMovement()->bOrientRotationToMovement = true; //this rotates the character model towards the direction it is moving
+	
+	//GetCharacterMovement()->bOrientRotationToMovement = true; //this rotates the character model towards the direction it is moving
 	GetCharacterMovement()->RotationRate = FRotator(0.0f, 720.0f, 0.0f); //self explanatory.....we only wants it to rotate in y-axis as its limited to that axis
 
 	GetCharacterMovement()->GravityScale = 2.0f; //gravity value, 2=2 times the value of normal gravity
@@ -53,7 +54,9 @@ void AMain2::BeginPlay()
 {
 	Super::BeginPlay();
 	CanMove = true;
+
 	
+	Last = EAnimationDirection::Down;
 }
 
 
@@ -149,11 +152,17 @@ void AMain2::Animate(float DeltaTime, FVector OldLocation, FVector const OldVelo
 		case EAnimationDirection::DownRight:
 			GetSprite()->SetFlipbook(Flipbooks.WalkDownRight);
 			break;
-		case EAnimationDirection::Jump:
-			GetSprite()->SetFlipbook(Flipbooks.Jump);
+		case EAnimationDirection::Jump_Left:
+			GetSprite()->SetFlipbook(Flipbooks.Jump_Left);
 			break;
-		case EAnimationDirection::Fall:
-			GetSprite()->SetFlipbook(Flipbooks.Fall);
+		case EAnimationDirection::Jump_Right:
+			GetSprite()->SetFlipbook(Flipbooks.Jump_Right);
+			break;
+		case EAnimationDirection::Fall_Right:
+			GetSprite()->SetFlipbook(Flipbooks.Fall_Right);
+			break;
+		case EAnimationDirection::Fall_Left:
+			GetSprite()->SetFlipbook(Flipbooks.Fall_Left);
 			break;
 		default:
 			break;
@@ -187,11 +196,17 @@ void AMain2::Animate(float DeltaTime, FVector OldLocation, FVector const OldVelo
 		case EAnimationDirection::DownRight:
 			GetSprite()->SetFlipbook(Flipbooks.IdleDownRight);
 			break;
-		case EAnimationDirection::Jump:
-			GetSprite()->SetFlipbook(Flipbooks.Jump);
+		case EAnimationDirection::Jump_Left:
+			GetSprite()->SetFlipbook(Flipbooks.Jump_Left);
 			break;
-		case EAnimationDirection::Fall:
-			GetSprite()->SetFlipbook(Flipbooks.Fall);
+		case EAnimationDirection::Jump_Right:
+			GetSprite()->SetFlipbook(Flipbooks.Jump_Right);
+			break;
+		case EAnimationDirection::Fall_Right:
+			GetSprite()->SetFlipbook(Flipbooks.Fall_Right);
+			break;
+		case EAnimationDirection::Fall_Left:
+			GetSprite()->SetFlipbook(Flipbooks.Fall_Left);
 			break;
 		default:
 			break;
@@ -204,84 +219,114 @@ void AMain2::SetCurrentAnimationDirection(FVector const& Velocity)
 	const float x = Velocity.GetSafeNormal().X;
 	const float y = Velocity.GetSafeNormal().Y;
 	const float z = Velocity.GetSafeNormal().Z;
-
 	bIsMoving = x != 0.0f || y != 0.0f ;
-	
 	
 	if (bIsMoving)
 	{
 		if (z == 0.0f)
 		{
-			if (y > 0.0f && x == 0.0f)
+			if (y > 0.0f && abs(x) <0.5f)
 			{
 				CurrentAnimationDirection = EAnimationDirection::Down;
+				Last = CurrentAnimationDirection;
 			}
-			else if (y > 0.0f && x > 0.0f)
+			else if (y > 0.5f && x > 0.5f)
 			{
 				CurrentAnimationDirection = EAnimationDirection::DownRight;
+				Last = CurrentAnimationDirection;
 			}
-			else if (y > 0.0f && x < -0.0f)
+			else if (y > 0.5f && x < -0.5f)
 			{
 				CurrentAnimationDirection = EAnimationDirection::DownLeft;
+				Last = CurrentAnimationDirection;
 			}
-			else if (y < 0.0f && x == 0.0f)
+			else if (y < 0.5f && abs(x) < 0.5f)
 			{
 				CurrentAnimationDirection = EAnimationDirection::Up;
+				Last = CurrentAnimationDirection;
 			}
 			
-			else if (y < -0.0f && x> 0.0f)
+			else if (y < -0.5f && x> 0.5f)
 			{
 				CurrentAnimationDirection = EAnimationDirection::UpperRight;
+				Last = CurrentAnimationDirection;
 			}
-			else if (y < -0.0f && x - 0.0f)
+			else if (y < -0.5f && x <- 0.5f)
 			{
 				CurrentAnimationDirection = EAnimationDirection::UpperLeft;
+				Last = CurrentAnimationDirection;
 			}
-			else if (y == 0.0f && x > 0.0f)
+			else if (abs(y) <0.5f && x > 0.0f)
 			{
 				CurrentAnimationDirection = EAnimationDirection::Right;
+				Last = CurrentAnimationDirection;
 			}
-			else if (z > 0.0f)
+			else if (z > 0.0f && x>0.0f)
 			{
-				CurrentAnimationDirection = EAnimationDirection::Jump;
+				CurrentAnimationDirection = EAnimationDirection::Jump_Right;
 			}
-			else if (z < 0.0f)
+			else if (z > 0.0f && x < 0.0f)
 			{
-				CurrentAnimationDirection = EAnimationDirection::Fall;
+				CurrentAnimationDirection = EAnimationDirection::Jump_Left;
 			}
-			else if (y == 0.0f && x < 0.0f)
+			else if (z < 0.0f && x>0.0f)
+			{
+				CurrentAnimationDirection = EAnimationDirection::Fall_Right;
+			}
+			else if (z < 0.0f && x<0.0f)
+			{
+				CurrentAnimationDirection = EAnimationDirection::Fall_Left;
+			}
+			else if (abs(y) < 0.5f && x < 0.0f)
 			{
 				CurrentAnimationDirection = EAnimationDirection::Left;
+				Last = CurrentAnimationDirection;
 			}
+			
 
 		}
-		else if(z>0.0f)
+		else if (z > 0.0f && x > 0.0f)
 		{
-			CurrentAnimationDirection = EAnimationDirection::Jump;
+			CurrentAnimationDirection = EAnimationDirection::Jump_Right;
 		}
-		else
+		else if (z > 0.0f && x < 0.0f)
 		{
-			
-				CurrentAnimationDirection = EAnimationDirection::Fall;
-			
+			CurrentAnimationDirection = EAnimationDirection::Jump_Left;
+		}
+		else if (z < 0.0f && x> 0.0f)
+		{
+			CurrentAnimationDirection = EAnimationDirection::Fall_Right;
+		}
+		else if (z < 0.0f && x < 0.0f)
+		{
+			CurrentAnimationDirection = EAnimationDirection::Fall_Left;
 		}
 	}
 	
 	else
 	{
-		if (z > 0.0f)
+		
+		if(z==0.0f)
 		{
-			CurrentAnimationDirection = EAnimationDirection::Jump;
+			CurrentAnimationDirection = Last;
 		}
-		else if (z < 0.0f)
-		{
-			CurrentAnimationDirection = EAnimationDirection::Fall;
-
-		}
-		else
-		{
-			CurrentAnimationDirection = EAnimationDirection::Down;
-		}
+		else if (z > 0.0f && (x==0|| CurrentAnimationDirection==EAnimationDirection::Right || CurrentAnimationDirection==EAnimationDirection::DownRight || CurrentAnimationDirection==EAnimationDirection::UpperRight))
+			{
+			CurrentAnimationDirection = EAnimationDirection::Jump_Right;
+			}
+		else if (z > 0.0f &&(x==0|| CurrentAnimationDirection == EAnimationDirection::Left || CurrentAnimationDirection == EAnimationDirection::DownLeft || CurrentAnimationDirection == EAnimationDirection::UpperLeft))
+			{
+			CurrentAnimationDirection = EAnimationDirection::Jump_Left;
+			}
+		else if (z < 0.0f &&(x==0|| CurrentAnimationDirection == EAnimationDirection::Right || CurrentAnimationDirection == EAnimationDirection::DownRight || CurrentAnimationDirection == EAnimationDirection::UpperRight))
+			{
+			CurrentAnimationDirection = EAnimationDirection::Fall_Right;
+			}
+		else if (z < 0.0f &&(x==0|| CurrentAnimationDirection == EAnimationDirection::Left || CurrentAnimationDirection == EAnimationDirection::DownLeft || CurrentAnimationDirection == EAnimationDirection::UpperLeft))
+			{
+			CurrentAnimationDirection = EAnimationDirection::Fall_Left;
+			}
+		
 	}
 
 }
