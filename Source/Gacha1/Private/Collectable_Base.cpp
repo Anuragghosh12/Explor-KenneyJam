@@ -45,7 +45,8 @@ void ACollectable_Base::Tick(float DeltaTime)
 			if (Char)
 			{
 				UCharacterMovementComponent* MoveComp = Char->GetCharacterMovement();
-				MoveComp->MaxWalkSpeed /= 100;
+				MoveComp->MaxWalkSpeed /= Speed_Multiplier;
+				Char->a=2;
 				Duration = 2.f;
 				isActive = false;
 				// Reset duration
@@ -67,7 +68,8 @@ void ACollectable_Base::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, 
 		isActive = true;
 		isCollected = true;
 		UCharacterMovementComponent* MoveComp = Char->GetCharacterMovement();
-		MoveComp->MaxWalkSpeed *= 100;
+		MoveComp->MaxWalkSpeed *= Speed_Multiplier;
+		Char->a=Double_Jump_Infinite;
 		
 	}
 }

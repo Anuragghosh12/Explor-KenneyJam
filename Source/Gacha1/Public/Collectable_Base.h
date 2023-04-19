@@ -30,6 +30,12 @@ public:
 		class UStaticMeshComponent* CollectibleMesh;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 		class USphereComponent* Sphere;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Collectable")
+		int Speed_Multiplier = 10;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Collectable")
+		int Double_Jump_Infinite = 100;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Collectable")
+		bool Wall_Run_Allow=false;
 	int8 isActive,isCollected;
 	void ResetSpeed();
 	

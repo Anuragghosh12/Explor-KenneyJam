@@ -6,6 +6,7 @@
 #include "PaperCharacter.h"
 //#include "PaperZD/Public/AnimSequences/PaperZDAnimSequence_Flipbook.h"
 #include "PaperFlipbookComponent.h"
+#include "CustomCharacterMovementComponent.h"
 #include "Main2.generated.h"
 
 /**
@@ -135,30 +136,53 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	AMain2(const FObjectInitializer& ObjectInitializer);
+
 	virtual void Landed(const FHitResult& Hit) override;
+
+	int a;
+
 	UFUNCTION()
 		void DoubleJump();
+
 	UPROPERTY()
 		int DoubleJumpCounter;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float JumpHeight;
+
+	
+	UFUNCTION(BlueprintPure)
+		FORCEINLINE UCustomCharacterMovementComponent* GetCustomCharacterMovement() const { return MovementComponent; }
+		
+
 	EAnimationDirection Last;
 
 private:
+	
 	float zPosition;
 	FVector TempPos = FVector();
 	bool CanMove;
+
+	
+
+
+
+
+
 protected:
 
 	virtual void BeginPlay() override;
+
 	virtual void AddMovementInput(FVector WorldDirection, float ScaleValue, bool bForce) override;
 
 	void MoveRight(float Value);
+
 	void MoveForward(float Value);
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 		class USpringArmComponent* SpringArmComponent;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 		class UCameraComponent* CameraComponent;
 
@@ -168,17 +192,19 @@ protected:
 	UFUNCTION(BlueprintCallable, Category = "Animation Character| Animation")
 		void SetCurrentAnimationDirection(FVector const& Velocity);
 
-
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AnimationCharacter|Config")
 		EAnimationDirection CurrentAnimationDirection {
 	};
-
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AnimationCharacter|Config")
 		FAnimationFlipbooks Flipbooks;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AnimationCharacter|Config")
 		uint8 bIsMoving : 1;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Character)
+		UCustomCharacterMovementComponent* MovementComponent;
+		
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 		float Health = 100.0f;

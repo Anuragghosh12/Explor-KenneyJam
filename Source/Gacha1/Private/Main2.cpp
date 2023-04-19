@@ -9,10 +9,10 @@
 #include "PaperZD/Public/AnimSequences/PaperZDAnimSequence_Flipbook.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Components/InputComponent.h"
-
 #include "GameFramework/CharacterMovementComponent.h"
 #include "PaperFlipbookComponent.h"
-AMain2::AMain2()
+AMain2::AMain2(const FObjectInitializer& ObjectInitializer)
+	: Super(ObjectInitializer.SetDefaultSubobjectClass<UCustomCharacterMovementComponent>(AMain2::CharacterMovementComponentName))
 {
 	SpringArmComponent = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
 	SpringArmComponent->SetupAttachment(RootComponent);
@@ -26,13 +26,14 @@ AMain2::AMain2()
 	SpringArmComponent->CameraLagSpeed = 4.f;
 	SpringArmComponent->CameraRotationLagSpeed = 4.f;
 	SpringArmComponent->CameraLagMaxDistance = 600.f;
-
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	CameraComponent->SetupAttachment(SpringArmComponent);
-	
+
+
+	MovementComponent = Cast<UCustomCharacterMovementComponent>(GetCharacterMovement());
+
 	//GetCharacterMovement()->bOrientRotationToMovement = true; //this rotates the character model towards the direction it is moving
 	GetCharacterMovement()->RotationRate = FRotator(0.0f, 720.0f, 0.0f); //self explanatory.....we only wants it to rotate in y-axis as its limited to that axis
-
 	GetCharacterMovement()->GravityScale = 2.0f; //gravity value, 2=2 times the value of normal gravity
 	GetCharacterMovement()->AirControl = 0.8f; //how much the character can move while mid air after a jump or fall
 	GetCharacterMovement()->JumpZVelocity = 1000.0f;//initial jump velocity;
@@ -46,7 +47,7 @@ AMain2::AMain2()
 	JumpHeight = 500.f;
 
 	OnCharacterMovementUpdated.AddDynamic(this, &AMain2::Animate);
-
+	
 	bIsMoving = false;
 }
 
@@ -55,7 +56,7 @@ void AMain2::BeginPlay()
 	Super::BeginPlay();
 	CanMove = true;
 
-	
+	a = 2;
 	Last = EAnimationDirection::Down;
 }
 
@@ -78,6 +79,7 @@ void AMain2::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	PlayerInputComponent->BindAxis("MoveRight", this, &AMain2::MoveRight);
 	PlayerInputComponent->BindAxis("MoveForward", this, &AMain2::MoveForward);
 }
+
 void AMain2::Landed(const FHitResult& Hit)
 {
 	Super::Landed(Hit);
@@ -86,7 +88,7 @@ void AMain2::Landed(const FHitResult& Hit)
 
 void AMain2::DoubleJump()
 {
-	if (DoubleJumpCounter < 2 )
+	if (DoubleJumpCounter < a )
 	{
 		ACharacter::LaunchCharacter(FVector(0, 0, JumpHeight), false, true); //#1 asks for the launch parameters, #2 checks for x,y launch #3 checks for z launch
 		DoubleJumpCounter++;
@@ -107,11 +109,11 @@ void AMain2::MoveForward(float Value)
 
 void AMain2::AddMovementInput(FVector WorldDirection, float ScaleValue, bool bForce)
 {
-	auto MovementComponent = GetMovementComponent();
+	auto MovComp = GetMovementComponent();
 
-	if (MovementComponent)
+	if (MovComp)
 	{
-		MovementComponent->AddInputVector(WorldDirection * ScaleValue, bForce);
+		MovComp->AddInputVector(WorldDirection * ScaleValue, bForce);
 	}
 	else
 	{
