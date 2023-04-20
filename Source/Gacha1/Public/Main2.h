@@ -129,7 +129,6 @@ class GACHA1_API AMain2 : public APaperCharacter
 	GENERATED_BODY()
 
 public:
-	AMain2();
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
@@ -163,8 +162,6 @@ private:
 	float zPosition;
 	FVector TempPos = FVector();
 	bool CanMove;
-
-	
 
 
 
@@ -204,7 +201,13 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Character)
 		UCustomCharacterMovementComponent* MovementComponent;
-		
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Character)
+		UArrowComponent* ArrowComp;
+
+	void Climb();
+
+	void CancelClimb();
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 		float Health = 100.0f;
@@ -212,4 +215,6 @@ public:
 	void DealDamage(float DamageAmount);
 
 };
+
+
 
