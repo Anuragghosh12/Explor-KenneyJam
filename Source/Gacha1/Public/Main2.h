@@ -208,6 +208,7 @@ protected:
 	void Climb();
 
 	void CancelClimb();
+	
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 		float Health = 100.0f;

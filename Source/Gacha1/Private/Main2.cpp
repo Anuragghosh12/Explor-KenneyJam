@@ -12,6 +12,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "PaperFlipbookComponent.h"
 #include "Components/ArrowComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 AMain2::AMain2(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer.SetDefaultSubobjectClass<UCustomCharacterMovementComponent>(AMain2::CharacterMovementComponentName))
@@ -30,6 +31,13 @@ AMain2::AMain2(const FObjectInitializer& ObjectInitializer)
 	SpringArmComponent->CameraLagMaxDistance = 600.f;
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	CameraComponent->SetupAttachment(SpringArmComponent);
+
+
+
+	
+
+
+
 
 
 	MovementComponent = Cast<UCustomCharacterMovementComponent>(GetCharacterMovement());
@@ -353,15 +361,18 @@ void AMain2::SetCurrentAnimationDirection(FVector const& Velocity)
 	}
 	else
 	{
-		ArrowComp = Cast<UArrowComponent>(GetArrowComponent());
-		FVector ForwardVector = ArrowComp->GetForwardVector();
-		if (ForwardVector.X > 0.f)
+		ArrowComp = GetArrowComponent();
+		if (ArrowComp->IsValidLowLevel())
 		{
-			CurrentAnimationDirection = EAnimationDirection::Right;
-		}
-		else
-		{
-			CurrentAnimationDirection = EAnimationDirection::Left;
+			FVector ForwardVector = ArrowComp->GetForwardVector();
+			if (ForwardVector.X > 0.f)
+			{
+				CurrentAnimationDirection = EAnimationDirection::Right;
+			}
+			else
+			{
+				CurrentAnimationDirection = EAnimationDirection::Left;
+			}
 		}
 	}
 
