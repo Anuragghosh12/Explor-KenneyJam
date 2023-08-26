@@ -210,7 +210,7 @@ protected:
 	void CancelClimb();
 	
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float Health = 100.0f;
 public:
 	void DealDamage(float DamageAmount);

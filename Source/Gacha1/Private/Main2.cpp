@@ -24,6 +24,7 @@ AMain2::AMain2(const FObjectInitializer& ObjectInitializer)
 	SpringArmComponent->bInheritPitch = false;
 	SpringArmComponent->bInheritRoll = false;
 	SpringArmComponent->bInheritYaw = false;
+	SpringArmComponent->bUsePawnControlRotation= true;
 	SpringArmComponent->bEnableCameraLag = true;
 	SpringArmComponent->bEnableCameraRotationLag = true;
 	SpringArmComponent->CameraLagSpeed = 4.f;
@@ -48,7 +49,7 @@ AMain2::AMain2(const FObjectInitializer& ObjectInitializer)
 	GetCharacterMovement()->AirControl = 0.8f; //how much the character can move while mid air after a jump or fall
 	GetCharacterMovement()->JumpZVelocity = 1000.0f;//initial jump velocity;
 	GetCharacterMovement()->GroundFriction = 3.0f;//self explanatory
-	GetCharacterMovement()->MaxWalkSpeed = 500.0f;//self explanatory
+	GetCharacterMovement()->MaxWalkSpeed = 200.0f;//self explanatory
 	GetCharacterMovement()->MaxFlySpeed = 600.0f;// idk what this means
 
 	TempPos = GetActorLocation();//gets the actor location and assigns it to variable
@@ -360,7 +361,7 @@ void AMain2::SetCurrentAnimationDirection(FVector const& Velocity)
 	
 	}
 	else
-	{
+	{/*
 		ArrowComp = GetArrowComponent();
 		if (ArrowComp->IsValidLowLevel())
 		{
@@ -373,7 +374,7 @@ void AMain2::SetCurrentAnimationDirection(FVector const& Velocity)
 			{
 				CurrentAnimationDirection = EAnimationDirection::Left;
 			}
-		}
+		}*/
 	}
 
 }
